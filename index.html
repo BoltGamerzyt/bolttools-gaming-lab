@@ -7,19 +7,16 @@
 
 <style>
 
-/* ================= VARIABLES ================= */
-
+/* ================= ROOT ================= */
 :root{
 --bg:#000;
---card:#0c0c0c;
 --gold:#d4af37;
---text:#ffffff;
+--text:#fff;
 --glass:rgba(255,255,255,0.05);
 }
 
-body.gold-mode{
+body.gold{
 --bg:#111;
---card:#1a1405;
 --gold:#ffd700;
 --text:#fff8dc;
 --glass:rgba(255,215,0,0.08);
@@ -41,7 +38,6 @@ transition:0.4s;
 }
 
 /* ================= PARTICLES ================= */
-
 #particles{
 position:fixed;
 top:0;
@@ -52,7 +48,6 @@ z-index:-1;
 }
 
 /* ================= NAV ================= */
-
 nav{
 position:fixed;
 top:0;
@@ -73,7 +68,7 @@ font-weight:bold;
 letter-spacing:2px;
 }
 
-.toggle-btn{
+.toggle{
 padding:6px 15px;
 border:1px solid var(--gold);
 border-radius:20px;
@@ -81,13 +76,12 @@ cursor:pointer;
 color:var(--gold);
 }
 
-.toggle-btn:hover{
+.toggle:hover{
 background:var(--gold);
 color:#000;
 }
 
 /* ================= HERO ================= */
-
 .hero{
 height:100vh;
 display:flex;
@@ -102,6 +96,12 @@ padding:0 20px;
 font-size:55px;
 color:var(--gold);
 text-shadow:0 0 25px rgba(212,175,55,0.7);
+animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+0%,100%{transform:translateY(0);}
+50%{transform:translateY(-15px);}
 }
 
 .hero button{
@@ -116,8 +116,7 @@ cursor:pointer;
 box-shadow:0 0 20px rgba(212,175,55,0.6);
 }
 
-/* ================= AI CHAT ================= */
-
+/* ================= AI SECTION ================= */
 .ai-section{
 padding:120px 8%;
 text-align:center;
@@ -141,16 +140,11 @@ margin-bottom:15px;
 }
 
 .message{
-margin-bottom:10px;
+margin-bottom:8px;
 }
 
-.user{
-color:#fff;
-}
-
-.bot{
-color:var(--gold);
-}
+.user{color:#fff;}
+.bot{color:var(--gold);}
 
 input{
 width:70%;
@@ -160,7 +154,7 @@ border-radius:20px;
 outline:none;
 }
 
-.send-btn{
+.send{
 padding:10px 20px;
 border:none;
 border-radius:20px;
@@ -169,7 +163,6 @@ cursor:pointer;
 }
 
 /* ================= FOOTER ================= */
-
 footer{
 padding:40px;
 text-align:center;
@@ -186,12 +179,14 @@ color:var(--gold);
 
 <nav>
 <div class="logo">BOLT EMPIRE AI</div>
-<div class="toggle-btn" onclick="toggleTheme()">Toggle Theme</div>
+<div class="toggle" onclick="toggleTheme()">Toggle Theme</div>
 </nav>
 
 <div class="hero">
 <h1>Luxury AI Empire</h1>
-<button onclick="scrollToAI()">Talk To AI</button>
+<button onclick="document.getElementById('ai').scrollIntoView({behavior:'smooth'})">
+Talk To AI
+</button>
 </div>
 
 <section class="ai-section" id="ai">
@@ -200,24 +195,19 @@ color:var(--gold);
 <div class="chatbox">
 <div class="messages" id="messages"></div>
 <input type="text" id="userInput" placeholder="Ask something...">
-<button class="send-btn" onclick="sendMessage()">Send</button>
+<button class="send" onclick="sendMessage()">Send</button>
 </div>
 </section>
 
 <footer>
-© 2026 Bolt Empire AI | Royal Intelligence Activated
+© 2026 Bolt Empire AI | Ultra Fast Mode
 </footer>
 
 <script>
 
 /* ================= THEME ================= */
 function toggleTheme(){
-document.body.classList.toggle("gold-mode");
-}
-
-/* ================= SCROLL ================= */
-function scrollToAI(){
-document.getElementById("ai").scrollIntoView({behavior:"smooth"});
+document.body.classList.toggle("gold");
 }
 
 /* ================= AI SYSTEM ================= */
@@ -232,8 +222,8 @@ input.value="";
 
 setTimeout(()=>{
 let reply = generateAIResponse(text);
-addMessage("AI: "+reply,"bot");
-},800);
+typeEffect("AI: "+reply);
+},150);
 }
 
 function addMessage(text,type){
@@ -245,53 +235,75 @@ messages.appendChild(div);
 messages.scrollTop = messages.scrollHeight;
 }
 
+function typeEffect(text){
+let messages = document.getElementById("messages");
+let div = document.createElement("div");
+div.className="message bot";
+messages.appendChild(div);
+
+let i=0;
+let speed=10;
+
+function typing(){
+if(i<text.length){
+div.innerText += text.charAt(i);
+i++;
+setTimeout(typing,speed);
+}
+messages.scrollTop = messages.scrollHeight;
+}
+typing();
+}
+
 function generateAIResponse(input){
 input=input.toLowerCase();
-
-if(input.includes("hello")) return "Welcome to the Empire.";
-if(input.includes("who are you")) return "I am Bolt Empire Royal AI.";
-if(input.includes("website")) return "This website is built with luxury black & gold dominance.";
-if(input.includes("ai")) return "AI stands for Artificial Intelligence.";
-if(input.includes("help")) return "How can the Empire assist you?";
-return "Empire AI is thinking strategically...";
+if(input.includes("hello")) return "Welcome to Bolt Empire.";
+if(input.includes("who are you")) return "I am the Royal AI of this Empire.";
+if(input.includes("website")) return "This is a luxury black & gold AI website.";
+if(input.includes("help")) return "Tell me how I can assist you.";
+if(input.includes("ai")) return "Artificial Intelligence powers this Empire.";
+return "Empire AI processing your request instantly.";
 }
 
 /* ================= GOLD PARTICLES ================= */
 
-const canvas = document.getElementById("particles");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-let particles = [];
-
+let particles=[];
 for(let i=0;i<100;i++){
 particles.push({
 x:Math.random()*canvas.width,
 y:Math.random()*canvas.height,
-radius:Math.random()*2+1,
-speed:Math.random()*1+0.5
+r:Math.random()*2+1,
+s:Math.random()*1+0.5
 });
 }
 
-function drawParticles(){
+function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
 ctx.fillStyle="rgba(212,175,55,0.8)";
 particles.forEach(p=>{
 ctx.beginPath();
-ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
 ctx.fill();
-p.y += p.speed;
+p.y+=p.s;
 if(p.y>canvas.height){
 p.y=0;
 p.x=Math.random()*canvas.width;
 }
 });
-requestAnimationFrame(drawParticles);
+requestAnimationFrame(animate);
 }
+animate();
 
-drawParticles();
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
 
 </script>
 

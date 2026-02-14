@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bolt Empire AI</title>
+
+<style>
+
+/* ================= VARIABLES ================= */
+
+:root{
+--bg:#000;
+--card:#0c0c0c;
+--gold:#d4af37;
+--text:#ffffff;
+--glass:rgba(255,255,255,0.05);
+}
+
+body.gold-mode{
+--bg:#111;
+--card:#1a1405;
+--gold:#ffd700;
+--text:#fff8dc;
+--glass:rgba(255,215,0,0.08);
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+scroll-behavior:smooth;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+overflow-x:hidden;
+transition:0.4s;
+}
+
+/* ================= PARTICLES ================= */
+
+#particles{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
+}
+
+/* ================= NAV ================= */
+
+nav{
+position:fixed;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px 8%;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(15px);
+border-bottom:1px solid rgba(212,175,55,0.2);
+z-index:1000;
+}
+
+.logo{
+color:var(--gold);
+font-weight:bold;
+letter-spacing:2px;
+}
+
+.toggle-btn{
+padding:6px 15px;
+border:1px solid var(--gold);
+border-radius:20px;
+cursor:pointer;
+color:var(--gold);
+}
+
+.toggle-btn:hover{
+background:var(--gold);
+color:#000;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+padding:0 20px;
+}
+
+.hero h1{
+font-size:55px;
+color:var(--gold);
+text-shadow:0 0 25px rgba(212,175,55,0.7);
+}
+
+.hero button{
+margin-top:30px;
+padding:14px 35px;
+border:none;
+background:linear-gradient(45deg,var(--gold),#b8962e);
+color:#000;
+font-weight:600;
+border-radius:30px;
+cursor:pointer;
+box-shadow:0 0 20px rgba(212,175,55,0.6);
+}
+
+/* ================= AI CHAT ================= */
+
+.ai-section{
+padding:120px 8%;
+text-align:center;
+}
+
+.chatbox{
+max-width:600px;
+margin:auto;
+background:var(--glass);
+padding:25px;
+border-radius:20px;
+border:1px solid rgba(212,175,55,0.2);
+backdrop-filter:blur(15px);
+}
+
+.messages{
+height:250px;
+overflow-y:auto;
+text-align:left;
+margin-bottom:15px;
+}
+
+.message{
+margin-bottom:10px;
+}
+
+.user{
+color:#fff;
+}
+
+.bot{
+color:var(--gold);
+}
+
+input{
+width:70%;
+padding:10px;
+border:none;
+border-radius:20px;
+outline:none;
+}
+
+.send-btn{
+padding:10px 20px;
+border:none;
+border-radius:20px;
+background:var(--gold);
+cursor:pointer;
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+padding:40px;
+text-align:center;
+border-top:1px solid rgba(212,175,55,0.2);
+color:var(--gold);
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<nav>
+<div class="logo">BOLT EMPIRE AI</div>
+<div class="toggle-btn" onclick="toggleTheme()">Toggle Theme</div>
+</nav>
+
+<div class="hero">
+<h1>Luxury AI Empire</h1>
+<button onclick="scrollToAI()">Talk To AI</button>
+</div>
+
+<section class="ai-section" id="ai">
+<h2 style="color:var(--gold);margin-bottom:40px;">Empire AI Assistant</h2>
+
+<div class="chatbox">
+<div class="messages" id="messages"></div>
+<input type="text" id="userInput" placeholder="Ask something...">
+<button class="send-btn" onclick="sendMessage()">Send</button>
+</div>
+</section>
+
+<footer>
+© 2026 Bolt Empire AI | Royal Intelligence Activated
+</footer>
+
+<script>
+
+/* ================= THEME ================= */
+function toggleTheme(){
+document.body.classList.toggle("gold-mode");
+}
+
+/* ================= SCROLL ================= */
+function scrollToAI(){
+document.getElementById("ai").scrollIntoView({behavior:"smooth"});
+}
+
+/* ================= AI SYSTEM ================= */
+
+function sendMessage(){
+let input = document.getElementById("userInput");
+let text = input.value.trim();
+if(text==="") return;
+
+addMessage("You: "+text,"user");
+input.value="";
+
+setTimeout(()=>{
+let reply = generateAIResponse(text);
+addMessage("AI: "+reply,"bot");
+},800);
+}
+
+function addMessage(text,type){
+let messages = document.getElementById("messages");
+let div = document.createElement("div");
+div.className="message "+type;
+div.innerText=text;
+messages.appendChild(div);
+messages.scrollTop = messages.scrollHeight;
+}
+
+function generateAIResponse(input){
+input=input.toLowerCase();
+
+if(input.includes("hello")) return "Welcome to the Empire.";
+if(input.includes("who are you")) return "I am Bolt Empire Royal AI.";
+if(input.includes("website")) return "This website is built with luxury black & gold dominance.";
+if(input.includes("ai")) return "AI stands for Artificial Intelligence.";
+if(input.includes("help")) return "How can the Empire assist you?";
+return "Empire AI is thinking strategically...";
+}
+
+/* ================= GOLD PARTICLES ================= */
+
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<100;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+radius:Math.random()*2+1,
+speed:Math.random()*1+0.5
+});
+}
+
+function drawParticles(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="rgba(212,175,55,0.8)";
+particles.forEach(p=>{
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+ctx.fill();
+p.y += p.speed;
+if(p.y>canvas.height){
+p.y=0;
+p.x=Math.random()*canvas.width;
+}
+});
+requestAnimationFrame(drawParticles);
+}
+
+drawParticles();
+
+</script>
+
+</body>
+</html>
